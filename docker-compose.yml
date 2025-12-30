@@ -1,4 +1,3 @@
-version: '3'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -20,11 +19,22 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+  spark:
+    image: spark:3.5.3-scala2.12-java17-python3-ubuntu
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark
+      - SPARK_MASTER_PORT=7077
+
   postgres:
     image: postgres:15
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: orders_db
+      POSTGRES_DB: analytics_db
     ports:
       - "5432:5432"
